@@ -1,75 +1,79 @@
 const mongoose = require('mongoose');
+const bcrypt = require('bcrypt');
 const Users = require('../models/Users'); //importando o modelo de Users
 
 module.exports = {
     signup: async (req, res) => {
         const { nome, sobrenome, fotouser, email, datanasc, password, publicacoes, avaliacoes, seguindo, seguidores } = req.body;
-        let addUser = new Users({ nome, sobrenome, fotouser, email, datanasc, password, publicacoes, avaliacoes, seguindo, seguidores });
+
+        const userExist = await Users.findOne({ email });
+        if (userExist) {
+            res.json({
+                data: [],
+                error: "E-mail já cadastrado!"
+            });
+            return;
+        }
+
+        const passwordHash = await bcrypt.hash(password, 10);
+        
+        let addUser = new Users({ nome, sobrenome, fotouser, email, datanasc, passwordHash, publicacoes, avaliacoes, seguindo, seguidores });
+
         const saveUsers = await addUser.save();
         if (!saveUsers) {
             res.json({
                 error: 'Erro ao adicionar User'
             });
-        } else {
-            res.json({
-                data: saveUsers
-            });
-        }
-    },
-    list: async (req, res) => {
-        const listUsers = await Users.find();
-        if (!listUsers) {
-            res.json({
-                error: 'Erro ao recuperar os registros'
-            });
-        } else {
-            res.json({
-                data: listUsers
-            })
+            return;
         }
 
+        res.json({
+            data: saveUsers
+        });
+
     },
-    getId: async (req, res) => {
-        const id = req.params.id;
-        const listUsers = await Users.findById(id);
-        if (!listUsers) {
+
+    signin: async (req, res) => {
+        const { email, password } = req.body;
+        const userExist = await Users.findOne({ email });
+
+        if (!userExist) {
             res.json({
-                error: 'Erro ao recuperar os registros'
+                data: [],
+                error: 'O Usuário não existe!'
             });
-        } else {
-            res.json({
-                data: listUsers
-            })
+            return;
         }
-    },
-    deleteId: async (req, res) => {
-        const id = req.params.id;
-        const listUsers = await Users.findByIdAndDelete(id);
-        if (!listUsers) {
+
+        const match = await bcrypt.compare(password, userExist.passwordHash);
+
+        if (!match) {
             res.json({
-                error: 'Erro ao recuperar os registros'
+                data: [],
+                error: "Senha incorreta!"
             });
-        } else {
-            res.json({
-                data: listUsers
-            })
+            return;
         }
+        res.json({
+            data: userExist
+        });
     },
+
     updateId: async (req, res) => {
         const id = req.params.id;
-        const { nome, sobrenome, fotouser, email, datanasc, password, publicacoes, avaliacoes, seguindo, seguidores } = req.body;
+        const { nome, sobrenome, email, datanasc } = req.body;
 
-        const UserUpdate = await Users.findByIdAndUpdate(id, { nome, sobrenome, fotouser, email, datanasc, password, publicacoes, avaliacoes, seguindo, seguidores });
-
-        if (!UserUpdate) {
+        await Users.findByIdAndUpdate(id, { nome, sobrenome, email, datanasc });
+        const userUpdate = await Users.findById(id);
+        if (!userUpdate) {
             res.json({
-                erro: 'Não foi possivel localizar o User'
+                data: [],
+                erro: 'Não foi possivel atualizar'
             });
         } else {
             res.json({
-                data: UserUpdate
+                data: userUpdate
             });
         }
-    }
-
+    },
 }

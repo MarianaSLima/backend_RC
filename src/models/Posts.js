@@ -5,7 +5,7 @@ const modelSchema = new mongoose.Schema({
     datapost: String,
     postdescr: String,
     curtidas: Number,
-    comentarios: [],
+    comentarios: [{comentario:String, upVote:Number, downVote:Number}],
     compartilhamentos: Number
 })
 

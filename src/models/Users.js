@@ -6,7 +6,7 @@ const modelSchema = new mongoose.Schema({
     fotouser: String,
     email: String,
     datanasc: String,
-    password: String,
+    passwordHash: String,
     publicacoes: Number,
     avaliacoes: Number,
     seguindo: Number,
