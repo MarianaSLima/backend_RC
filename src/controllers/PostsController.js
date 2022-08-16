@@ -32,7 +32,7 @@ module.exports = {
 
     getImportancia: async (req, res) => {
         const importancia = req.params.importancia;
-        const listPosts = await Users.findOne({importancia});
+        const listPosts = await Posts.findOne(importancia);
         if (!listPosts) {
             res.json({
                 error: 'Erro ao recuperar os registros'
