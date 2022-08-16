@@ -5,13 +5,21 @@ const modelSchema = new mongoose.Schema({
     datapost: String,
     postdescr: String,
     curtidas: Number,
-    comentarios: [{comentario:String, upVote:Number, downVote:Number}],
+    importancia: Number,
+    comentarios: [
+        {
+            fotoUser: String,
+            nome: String,
+            comentario: String,
+            upVote: Number,
+            downVote: Number
+        }],
     compartilhamentos: Number
 })
 
-const modelName= "Postagens";
-if(mongoose.connection && mongoose.connection.models[modelName]) {
+const modelName = "Postagens";
+if (mongoose.connection && mongoose.connection.models[modelName]) {
     module.exports = mongoose.connection.models[modelName];//se estiver conectado e já existir entao ele usa o modelo
-} else{
+} else {
     module.exports = mongoose.model(modelName, modelSchema);//se não existir o nó Users, então ele adiciona
 }

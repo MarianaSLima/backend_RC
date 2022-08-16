@@ -4,7 +4,7 @@ const Posts = require('../models/Posts'); //importando o modelo de Posts
 module.exports = {
     addPost: async (req, res) => {
         const { userid, datapost, postdescr, curtidas, comentarios, compartilhamentos } = req.body;
-        let addPost = new Posts({ userid, datapost, postdescr, curtidas, comentarios, compartilhamentos});
+        let addPost = new Posts({ userid, datapost, postdescr, curtidas, comentarios, compartilhamentos });
         const savePosts = await addPost.save();
         if (!savePosts) {
             res.json({
@@ -17,9 +17,22 @@ module.exports = {
         }
     },
 
-    getId: async (req, res) => {
-        const id = req.params.id;
-        const listPosts = await Powsts.findById(id);
+    getAll: async (req, res) => {
+        const listPosts = await Posts.find();
+        if (!listPosts) {
+            res.json({
+                error: 'Erro ao recuperar os registros'
+            });
+        } else {
+            res.json({
+                data: listPosts
+            })
+        }
+    },
+
+    getImportancia: async (req, res) => {
+        const importancia = req.params.importancia;
+        const listPosts = await Users.findOne({importancia});
         if (!listPosts) {
             res.json({
                 error: 'Erro ao recuperar os registros'
