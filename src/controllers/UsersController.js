@@ -5,6 +5,7 @@ const Users = require('../models/Users'); //importando o modelo de Users
 module.exports = {
     signup: async (req, res) => {
         const { nome, sobrenome, fotoUser, email, datanasc, password} = req.body;
+        console.log(fotoUser);
 
         const userExist = await Users.findOne({ email });
         if (userExist) {
