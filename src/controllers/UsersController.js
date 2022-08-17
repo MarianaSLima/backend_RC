@@ -4,18 +4,24 @@ const Users = require('../models/Users'); //importando o modelo de Users
 
 module.exports = {
     signup: async (req, res) => {
-        const { nome, sobrenome, fotoUser, email, datanasc, password} = req.body;
-        console.log(fotoUser);
+        const { nome, sobrenome, fotoUser, email, datanasc, password, passwordCompare} = req.body;
 
         const userExist = await Users.findOne({ email });
         if (userExist) {
             res.json({
                 data: [],
                 error: "E-mail já cadastrado!"
+                
             });
             return;
         }
-
+        if (password !== passwordCompare) {
+            res.json({
+                data: [],
+                error: "As senhas diferem!"
+            });
+            return;
+        }
         const passwordHash = await bcrypt.hash(password, 10);
         
         let addUser = new Users({ nome, sobrenome, fotoUser, email, datanasc, passwordHash});
@@ -31,7 +37,6 @@ module.exports = {
         res.json({
             data: saveUsers
         });
-
     },
 
     signin: async (req, res) => {
