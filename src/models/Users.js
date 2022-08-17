@@ -3,9 +3,9 @@ const mongoose = require('mongoose');
 const modelSchema = new mongoose.Schema({
     nome: String,
     sobrenome: String,
-    fotouser: String,
-    email: String,
+    fotoUser: String,
     datanasc: String,
+    email: String,
     passwordHash: String,
     publicacoes: Number,
     avaliacoes: Number,

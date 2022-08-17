@@ -4,7 +4,7 @@ const Users = require('../models/Users'); //importando o modelo de Users
 
 module.exports = {
     signup: async (req, res) => {
-        const { nome, sobrenome, fotouser, email, datanasc, password, publicacoes, avaliacoes, seguindo, seguidores } = req.body;
+        const { nome, sobrenome, fotoUser, email, datanasc, password} = req.body;
 
         const userExist = await Users.findOne({ email });
         if (userExist) {
@@ -17,7 +17,7 @@ module.exports = {
 
         const passwordHash = await bcrypt.hash(password, 10);
         
-        let addUser = new Users({ nome, sobrenome, fotouser, email, datanasc, passwordHash, publicacoes, avaliacoes, seguindo, seguidores });
+        let addUser = new Users({ nome, sobrenome, fotoUser, email, datanasc, passwordHash});
 
         const saveUsers = await addUser.save();
         if (!saveUsers) {
