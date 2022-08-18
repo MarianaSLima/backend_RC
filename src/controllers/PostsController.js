@@ -18,7 +18,7 @@ module.exports = {
     },
 
     getAll: async (req, res) => {
-        const listPosts = await Posts.find();
+        const listPosts = await Posts.findById();
         if (!listPosts) {
             res.json({
                 error: 'Erro ao recuperar os registros'
