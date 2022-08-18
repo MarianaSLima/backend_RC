@@ -15,13 +15,15 @@ module.exports = {
             });
             return;
         }
-        if (password !== passwordCompare) {
+        if (passwordCompare !== password) {
             res.json({
                 data: [],
                 error: "As senhas diferem!"
             });
             return;
         }
+
+        
         const passwordHash = await bcrypt.hash(password, 10);
         
         let addUser = new Users({ nome, sobrenome, fotoUser, email, datanasc, passwordHash});
@@ -35,7 +37,7 @@ module.exports = {
         }
 
         res.json({
-            data: saveUsers
+            data: saveUsers,
         });
     },
 
